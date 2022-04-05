@@ -1,5 +1,5 @@
 {
-  "name": "Dentalpix importer",
+  "name": "dentalpix-importer",
   "description": "An experiment to learn Electron",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -102,7 +102,7 @@
   },
   "license": "MIT",
   "keywords": [
-    "electron",
+    "electron"
   ],
   "jest": {
     "testURL": "http://localhost/",
