@@ -31,6 +31,12 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+ipcMain.on('uploadFiles', async (event, files) => {
+  const msg = `Received message to upload: ${files}`;
+  console.log(msg);
+  event.reply('ipc-example', msg);
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

@@ -5,6 +5,9 @@ contextBridge.exposeInMainWorld('electron', {
     myPing() {
       ipcRenderer.send('ipc-example', 'ping');
     },
+    uploadFiles(files: string[]) {
+      ipcRenderer.send('uploadFiles', files);
+    },
     on(channel: string, func: (...args: unknown[]) => void) {
       const validChannels = ['ipc-example'];
       if (validChannels.includes(channel)) {
