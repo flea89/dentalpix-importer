@@ -1,6 +1,7 @@
 import exifReader from 'exif-reader';
 import sharp from 'sharp';
 import QRReader from 'qrcode-reader';
+import jsQR from 'jsqr';
 
 // TODO: give this a better name.
 export class ImageErrorNotAvailable extends Error {
@@ -35,10 +36,13 @@ export default class Image {
   get bitmap() {
     async function getBitmap(image) {
       const { data, info } = await image
+        .ensureAlpha()
         .raw()
         .toBuffer({ resolveWithObject: true });
+
+      const pixelArray = new Uint8ClampedArray(data.buffer);
       return {
-        data,
+        data: pixelArray,
         width: info.width,
         height: info.height,
       };
@@ -67,25 +71,25 @@ export default class Image {
       const qrReader = new QRReader();
       const bitmap = await this.bitmap;
 
-      const qrCodeValuePromise = new Promise((resolve, reject) => {
-        qrReader.callback = (err: object, v: string | null) => {
-          if (err != null) {
-            reject(err);
-          } else {
-            resolve(v);
-          }
-        };
-        qrReader.decode(bitmap);
-      });
-
       try {
-        const qrcode: any = await qrCodeValuePromise;
-        this.#qrCodeValue = qrcode.result;
+        const code = jsQR(bitmap.data, bitmap.width, bitmap.height);
+        this.#qrCodeValue = code?.data || undefined;
+        console.debug(`QRCode: ${this.#qrCodeValue}`);
       } catch (e) {
         this.#qrCodeValue = undefined;
+        console.warn(e);
       } finally {
         this.#hasQrCodeBeenChecked = true;
       }
+
+      // try {
+      //   const qrcode: any = await qrCodeValuePromise;
+      //   this.#qrCodeValue = qrcode.result;
+      // } catch (e) {
+      //   this.#qrCodeValue = undefined;
+      // } finally {
+      //   this.#hasQrCodeBeenChecked = true;
+      // }
     }
 
     return this.#qrCodeValue;

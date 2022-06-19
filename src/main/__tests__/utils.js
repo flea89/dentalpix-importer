@@ -27,12 +27,6 @@ export async function createImage({
   let created;
   const target = path.join(testImageFolder, `${name}.jpg`);
 
-  if (qrCode) {
-    imageDataUrl = await QRCode.toDataURL(JSON.stringify(qrCode));
-  } else {
-    imageDataUrl = defaultimageDataUrl;
-  }
-
   if (!date) {
     // Make sure subsequent call to create image
     // create images with a later created date.
@@ -43,12 +37,18 @@ export async function createImage({
     now = created;
   }
 
+  if (qrCode) {
+    imageDataUrl = await QRCode.toDataURL(JSON.stringify(qrCode));
+  } else {
+    imageDataUrl = defaultimageDataUrl;
+  }
+
   image = imageDataUrl.replace(/^data:image\/\w+;base64,/, '');
 
   image = sharp(Buffer.from(image, 'base64')).jpeg();
   exif.DateTimeOriginal = dateFormat.asString('yyyy:MM:dd hh:mm:ss', created);
-  console.log(exif.DateTimeOriginal);
-  // exif.DateTimeOriginal = date.toISOString()
+
+
   image = image.withMetadata({
     exif: {
       IFD0: exif,

@@ -7,28 +7,29 @@ const images = [
   {
     folder: 'a',
   },
-  // 'anImage',
-  // 'anImage',
+  'anImage',
+  'anImage',
   {
     folder: 'b',
   },
-  // 'anImage',
-  // 'anImage',
+  'anImage',
+  'anImage',
 ];
 
 describe('App', () => {
   jest.setTimeout(10000);
 
   beforeAll(async () => {
-    images.map((i) => {
-      if (typeof i === 'string') {
-        return createImage();
-      }
-      return createImage({
-        qrCode: i,
-      });
-    });
-    await Promise.all(images);
+    await Promise.all(
+      images.map((i) => {
+        if (typeof i === 'string') {
+          return createImage();
+        }
+        return createImage({
+          qrCode: i,
+        });
+      })
+    );
   });
 
   afterAll(async () => {
@@ -50,9 +51,6 @@ describe('App', () => {
     );
 
     const map = await categorize(files);
-    // expect(map.get('noCategory')?.length).toBe(
-    //   filesNames.filter((name) => name.match('jpg|jpeg')).length
-    // );
-    expect(map.get('a')).toBe(2);
+    expect(map.get('a')?.length).toBe(2);
   });
 });
