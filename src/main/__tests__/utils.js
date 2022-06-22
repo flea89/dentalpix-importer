@@ -70,6 +70,14 @@ export async function createImage({
 export async function emptyFolder(folder = testImageFolder) {
   const files = await fs.readdir(folder);
   return Promise.all(
-    files.map((f) => fs.unlink(path.join(testImageFolder, f)))
+    files.map(async (f) => {
+      const p = path.join(folder, f);
+      const stat = await fs.stat(p);
+      if (stat.isDirectory()) {
+        return fs.rm(p, { recursive: true, force: true });
+      }
+
+      return fs.unlink(p);
+    })
   );
 }
