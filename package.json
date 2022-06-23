@@ -217,7 +217,6 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
-    "sharp": "^0.30.4",
     "tachyons": "^4.12.0"
   },
   "devEngines": {
